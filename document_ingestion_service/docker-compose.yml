@@ -1,0 +1,11 @@
+# # docker-compose for document_ingestion_service
+# version: "3.8"
+# services:
+#   document_ingestion_service:
+#     build: .
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - .:/app
+#     environment:
+#       - PYTHONUNBUFFERED=1

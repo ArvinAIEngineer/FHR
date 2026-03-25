@@ -1,0 +1,6 @@
+TASK:
+You are an expert Image processing agent that extracts information from Image accurately with perfect Recall. Use the description in following FEATURE and extract it from the IMAGE. Do not add any headers or footers.
+
+```
+<FEATURE>
+```

@@ -1,0 +1,17 @@
+{
+    "dependencies": [
+      "langchain_ollama",
+      "langchain_core",
+      "langgraph",
+      "langchain_huggingface",
+      "langchain_community",
+      "langchain_text_splitters",
+      "langchain",
+      "bs4",
+      "typing_extensions"
+    ],
+    "graphs": {
+      "rag_agent": "./orchestrator/orchestrator.py:graph"
+    },
+    "env": "./.langgraph-venv"
+}

@@ -1,0 +1,98 @@
+environment:
+  azure_endpoint: "Your end point"
+  openai_api_version: "2024-12-01-preview"
+  azure_deployment_embedding: "text-embedding-ada-002-2"
+  azure_deployment_llm: "gpt-4o-2"
+  api_key: "Your key"
+  llm_model: "gpt-4o-2"  # Model name for LLM
+  llm_temperature: 0.7   # Temperature for LLM
+  llm_max_tokens: 2000   # Max tokens for LLM responses
+
+  # Ollama configuration
+  ollama_base_url: "http://10.254.140.69:11434"
+  ollama_embedding_model: "paraphrase-multilingual"
+  ollama_llm_model: "llama3.3:latest"
+
+  use_ollama: True # Set to true to use Ollama models, false for Azure
+
+
+# Vector store configuration
+vectorstore:
+  type: "chroma"
+  persist_directory: "./chroma_db_old_cur"
+  collection_name: "fahr_documents"
+
+# Text extraction chunking options
+text:
+  chunk_size: 1000      # characters per chunk
+  chunk_overlap: 200    # overlapping characters between chunks
+
+# Service defaults
+service:
+  host: "0.0.0.0"
+  port: 8000
+
+# Logging configuration
+logging:
+  version: 1
+  disable_existing_loggers: False # Keep existing loggers (e.g., from libraries)
+  formatters:
+    simple:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    detailed:
+      format: "%(asctime)s - %(name)s - %(module)s - %(funcName)s - %(lineno)d - %(levelname)s - %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: INFO # Default level for console output
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.RotatingFileHandler
+      level: DEBUG # Default level for file output
+      formatter: detailed
+      filename: logs/document_ingestion_service.log # Log file path relative to project root
+      maxBytes: 10485760 # 10MB per file
+      backupCount: 5    # Number of backup files
+      encoding: utf8
+  root: # Root logger configuration (applies to all loggers unless overridden)
+    level: DEBUG # Overall minimum logging level
+    handlers: [console, file] # Log to both console and file by default
+  loggers: # Specific configurations for library loggers (optional)
+    uvicorn.error:
+      level: INFO
+      handlers: [console, file]
+      propagate: no # Don't pass to root logger
+    uvicorn.access:
+      level: INFO
+      handlers: [console, file]
+      propagate: no
+    fastapi:
+      level: INFO
+      handlers: [console, file]
+      propagate: no
+
+#modules
+
+#image summarization
+
+image_summarization:
+  image_features_path: "prompts/image_features.json"
+  image_feature_prompt_path: "prompts/feature_prompt.txt"
+  summary_prompt_path: "prompts/summary_prompt.txt"
+  page_image_prompt_en_path: "prompts/page_image_prompt_en.txt"
+  page_image_prompt_ar_path: "prompts/page_image_prompt_ar.txt"
+
+#table summarization
+
+table_summarization:
+  detailed_summary_prompt_path: "prompts/detailed_summary_prompt.txt"
+  num_ctx: 1024
+  num_predict: 1024
+  temprature: 0
+
+# topic subtopic modelling
+topic_subtopic_modelling_english:
+  topic_description_path: "prompts/topic_descriptions.json"
+  subtopic_description_path: "prompts/subtopic_descriptions.json"
+  topic_subtopic_mapping_path: "prompts/topic_subtopic_mapping.json"

@@ -1,0 +1,2028 @@
+openapi: 3.0.1
+info:
+  title: bayanati-api
+  contact:
+    name: Hello
+  version: '1.0'
+  description: bayanati-api
+servers:
+- url: http://10.254.115.17:8090/
+tags:
+- name: Employee Profile
+  description: APIs related to Employee Profile
+- name: Employee Documents
+  description: APIs related to Employee Documents
+- name: Leave Management
+  description: APIs related to managing employee leave records
+- name: Time Attendance
+  description: APIs related to managing employee Attendance records
+- name: Letter Request
+  description: APIs related to Generating To Whom It may concern letters
+- name: Dashboard
+  description: This collection of POST-based APIs serves the Dashboard module of the
+    Bayanati system. It provides employees and managers with timely, relevant data
+    related to attendance, leaves, holidays, profile progress, KPIs, and other performance
+    metrics. The API endpoints are grouped under the "Dashboard" tag and are intended
+    for use in employee self-service and management interfaces.
+- name: PMS
+  description: APIs related to Employee Annual Performance Management System which
+    consists of three phases, Annual Agreement, Interim Review and Final Evaluation
+    Phase. Employees can set their objectives, competencies and send for Manager Approval.
+    Manager can view their employee pms submissions and review.
+- name: MaQassart
+  description: Send and Receive Thank you Cards within Federal Government
+- name: Business Card
+  description: Get or Request for Business Card Requests
+paths:
+  /Bayanati/bayanati-api/api/MobileAPI/GET_AWARD_NOMINEES_BY_EMP:
+    post:
+      tags:
+      - Awards
+      summary: Returns award nominations created by the employee. Supports filters
+        like award plan, status, and year.
+      description: Returns award nominations created by the employee. Supports filters
+        like award plan, status, and year.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Awards.GET_AWARD_NOMINEES_BY_EMP.GetAwardNomineesByEmployeeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Awards.GET_AWARD_NOMINEES_BY_EMP.GetAwardNomineesByEmployeeResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_AWARD_NOMINEES_FOR_EMP:
+    post:
+      tags:
+      - Awards
+      summary: Returns award nominations where the employee is a nominee. Can be filtered
+        by award plan, status, and year.
+      description: Returns award nominations where the employee is a nominee. Can
+        be filtered by award plan, status, and year.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Awards.GET_AWARD_NOMINEES_FOR_EMP.GetAwardNomineesForEmployeeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Awards.GET_AWARD_NOMINEES_FOR_EMP.GetAwardNomineesForEmployeeResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_BUSINESS_CARD_DET:
+    post:
+      tags:
+      - Business Card
+      summary: Get Business Card Details
+      description: Retrieves business card information for a specific employee using
+        i_EMP_PERSON_ID. This endpoint returns employee profile information including
+        ministry name, full name, job title, contact information such as email, and
+        work phone
+      operationId: getBusinessCardDEt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.BusinesCard.GET_BUSINESS_CARD_DET.BusinessCardDetailsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.BusinesCard.GET_BUSINESS_CARD_DET.BusinessCardDetailsResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_EMP_COMP_OFF_OVERTIME_DET:
+    post:
+      tags:
+      - Compensation
+      summary: Employee Compensation overtime details
+      description: Retrieves detailed compensation and overtime requests submitted
+        by the employee. Supports filtering by date range, level, and language.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Compensation.GET_EMP_COMP_OFF_OVERTIME_DET.EmployeeCompensationDetailsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Compensation.GET_EMP_COMP_OFF_OVERTIME_DET.EmployeeCompensationDetailsResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_PROFILE_COMPLETION:
+    post:
+      tags:
+      - Dashboard
+      summary: Get Profile Completion
+      description: "Returns  the completion status of the employee\u2019s profile\
+        \ including percentage completeness and pending sections for the specified\
+        \ year.."
+      operationId: getProfileCompletion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmpDashboard.ProfileCompletionRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmpDashboard.ProfileCompletionResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_PERSON_REQUESTS:
+    post:
+      tags:
+      - Dashboard
+      summary: Get Person Requests
+      description: Retrieves personal requests submitted by the employee.
+      operationId: getPersonRequests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_PERSON_REQUESTS.PersonRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_PERSON_REQUESTS.PersonResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_EIT_REQUESTS:
+    post:
+      tags:
+      - EIT
+      summary: 'Get EIT Requests for Employee. Eg: To get langauge requests'
+      description: Displays the employee's declared language proficiencies including
+        reading, writing, and speaking levels.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EIT.GET_EIT_REQUESTS.GetEitRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EIT.GET_EIT_REQUESTS.GetEitRespponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_EMP_ALL_DETAILS_PER_TYPE:
+    post:
+      tags:
+      - EIT
+      summary: Allows a manager to view all Violations, Exit Permits for their Team
+        or Hierarchy within a specific date range and level. Requires manager ID,
+        language, and date range. The response depends on i_INFORMATION_TYPE where
+        i_INFORMATION_TYPE can accept Violation, Exit Permit or Requests.
+      description: Allows a manager to view all Violations, Exit Permits for their
+        Team or Hierarchy within a specific date range and level. Requires manager
+        ID, language, and date range. The response depends on i_INFORMATION_TYPE where
+        i_INFORMATION_TYPE can accept Violation, Exit Permit or Requests.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EIT.GET_EMP_ALL_DETAILS_PER_TYPE.EmployeeAllDetailsPerTypeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EIT.GET_EMP_ALL_DETAILS_PER_TYPE.EmployeeAllDetailsPerTypeResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_ASSIGNMENT_INFO:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Assignment Information
+      description: "Provides information about the employee\u2019s current work assignment,\
+        \ such as department, position."
+      operationId: getAssignmentInformation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest'
+      responses:
+        '200':
+          description: Assignment details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_QUALIFICATIONS:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Qualifications
+      description: Retrieves educational qualifications and certifications held by
+        the employee including institution, gpa.
+      operationId: getEmployeeQualifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest'
+      responses:
+        '200':
+          description: Qualification details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_MAIN_ADDRESS:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Main Address
+      description: Retrieves the primary residential or mailing address of the employee
+        as maintained in the HR system.
+      operationId: getMainAddress
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest'
+      responses:
+        '200':
+          description: Main address retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_OTHER_ADDRESS:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Other Address
+      description: Retrieves additional addresses associated with the employee, such
+        as temporary or alternate residences.
+      operationId: getOtherAddress
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest'
+      responses:
+        '200':
+          description: Other address information retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_PHONES:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Phones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/RETURN_EMPLOYEE_PAYSLIP:
+    post:
+      tags:
+        - Personal Information
+      summary: Retrieve Employee Payslip Details
+      description: Returns detailed payslip information (non-PDF) for the specified employee. This includes earnings, deductions, and net salary for a given period. Useful for applications that display payslip data in structured format rather than as a downloadable document.
+      operationId: returnEmployeePayslip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.PayslipRequest'
+      responses:
+        '200':
+          description: Employee payslip details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.PayslipResponse'               
+  /Bayanati/bayanati-api/api/MobileAPI/VIEW_PAYSLIP_PDF:
+    post:
+      tags:
+      - Employee Profile
+      summary: View Employee Payslip as PDF
+      description: Retrieves the PDF version of an employee's payslip payslip for
+        the specified month and year. This is typically used to download or view payslip
+        documents. Requires person ID
+      operationId: viewPayslipPdf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LetterRequestLib.Models.ViewPayslipPrcRequest'
+      responses:
+        '200':
+          description: Payslip PDF retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LetterRequestLib.Models.ViewPayslipPrcResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_EMP_INSURANCE_HISTORY:
+    post:
+      tags:
+      - Employee Profile
+      summary: Get Employee Insurance History
+      description: Retrieves the unemployment (ILOE) insurance history records of
+        an employee, including previous and current policies. Displays the Unemployment
+        insurance coverage history for an employee based on their registration number
+        and selected date range.
+      operationId: getEmpInsuranceHistory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.GET_EMP_INSURANCE_HISTORY.EmpInsuranceHistoryRequest'
+      responses:
+        '200':
+          description: Insurance history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.EmployeeProfile.GET_EMP_INSURANCE_HISTORY.EmpInsuranceHistoryResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_LEAVE_HISTORY:
+    get:
+      tags:
+      - Leave Management
+      operationId: getLeaveHistoryGET
+      summary: Retrieve leave history for an employee (GET method)
+      description: Provides historical data of leave requests submitted by an employee.
+        Includes date range, language, and person ID. This endpoint returns list of
+        all leave requests submitted by user for the specified duration. The response
+        includes the leave type, status, duration, number of days and attachments
+        list.
+      parameters:
+      - name: I_SESSION_ID
+        in: query
+        schema:
+          type: string
+        description: Session identifier
+      - name: I_PERSON_ID
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+        description: Person identifier
+      - name: I_START_DATE
+        in: query
+        schema:
+          type: string
+        description: Start date for leave history
+      - name: I_END_DATE
+        in: query
+        schema:
+          type: string
+        description: End date for leave history
+      - name: I_LANG
+        in: query
+        schema:
+          type: string
+        description: Language code
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_LEAVE_HISTORY.LeaveHistoryResponse'
+    post:
+      tags:
+      - Leave Management
+      operationId: getLeaveHistoryPOST
+      summary: Retrieve leave history for an employee (POST method)
+      description: Provides historical data of leave requests submitted by an employee.
+        Includes date range, language, and person ID. This endpoint returns list of
+        all leave requests submitted by user for the specified duration. The response
+        includes the leave type, status, duration, number of days and attachments
+        list.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_LEAVE_HISTORY.LeaveHistoryRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_LEAVE_HISTORY.LeaveHistoryResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_LEAVE_MGR_DETAILS:
+    post:
+      tags:
+      - Leave Management
+      operationId: getLeaveManagerDetails
+      summary: Get Leave Manager Details
+      description: 'Allows a manager to view leave details of team members within
+        a specific date range and level. Requires manager ID, language, and date range.
+        The i_LEVEL determines whether the manager wants to see the details of their
+        direct reportees or within his Hierarchy. '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_LEAVE_MGR_DETAILS.GetLeaveMgrDetailsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_LEAVE_MGR_DETAILS.GetLeaveMgrDetailsResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_MGR_LATEST_LEAVE_EMP_DET:
+    post:
+      tags:
+      - Leave Management
+      operationId: getManagerLatestLeaveEmployeeDetails
+      summary: Get manager's latest leave employee details
+      description: This endpoint provides details about the latest leave requests
+        for employees under a manager's hierarchy. Allows a manager to view leave
+        details of team members within a specific date range and level. Requires manager
+        ID, language, and date range. The i_LEVEL
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_MGR_LATEST_LEAVE_EMP_DET.GetMgrLatestLeaveEmpDetRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Leaves.GET_MGR_LATEST_LEAVE_EMP_DET.GetMgrLatestLeaveEmpDetResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_MA_QASSART_SENT:
+    post:
+      tags:
+      - MaQassart
+      summary: Get Sent Ma Qassart Entries
+      description: Retrieves the list of Ma Qassart items that the current user has
+        sent to other employees for the specified month and year.
+      operationId: getSentMaQassart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.MaQassart.GET_MA_QASSART_SENT.MaQassartSentRequest'
+      responses:
+        '200':
+          description: List of sent Ma Qassart entries returned successfully.
+  /Bayanati/bayanati-api/api/MobileAPI/GET_LIVE_NOTIFICATIONS_COUNT:
+    post:
+      tags:
+      - Notifications
+      description: Fetches the total count of live notifications, which returns a
+        summary of all the notifications which are with status Open or Closed and
+        which are of type FYI and FYA
+      operationId: getLiveNotificationsCount
+      summary: Get Live Notifications Count
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_COUNT.GetLiveNotificationCountRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_COUNT.GetLiveNotificationCountResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_LIVE_NOTIFICATIONS_BY_PAGE:
+    post:
+      tags:
+      - Notifications
+      description: Returns a list of Live Notifications based on provided page size,
+        status such as OPEN or CLOSED for a particular user with Username. The endpoint
+        returns the subject of the notification, timestamp, Status, type of notification
+        such FYI or FYA etc.
+      operationId: getLiveNotificationsByPage
+      summary: Get Live Notifications by Page
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_BY_PAGE.GetLiveNotificationsByPageRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_BY_PAGE.GetLiveNotificationsByPageResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_ANN_LEAVE_BAL:
+    post:
+      tags:
+      - Leave Management
+      description: This endpoint retrieves the annual leave balance, including accrued, taken, and remaining days for an employee. Retrieves the current leave balance for an employee. Requires session ID, assignment ID, and calculation date defaulted to End of Current Year or specified by user
+      operationId: getAnnualLeaveBalance
+      summary: Retrieve annual leave balance for an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.BalanceRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.BalanceResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_NOTIFICATION_BODY_V2:
+    post:
+      tags:
+      - Notifications
+      description: Retrieves detailed content of a specific notification using its
+        unique ID, session, and preferred language.
+      operationId: getNotificationBodyV2
+      summary: Get Notification Details V2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2WithJsonStringResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/OLM_EMPLOYEE_COURSE_HIS_V2:
+    post:
+      tags:
+      - OLM
+      summary: Provides the history of learning and training courses completed by
+        the employee within a specified year and time frame. Useful for development
+        and compliance tracking.
+      description: Provides the history of learning and training courses completed
+        by the employee within a specified year and time frame. Useful for development
+        and compliance tracking.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.OLM.EMPLOYEE_COURSE_HIS_V2.EmployeeCourseHisV2Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.OLM.EMPLOYEE_COURSE_HIS_V2.EmployeeCourseHisV2sResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/PM_GET_APPRAISAL_TEMPLATES:
+    post:
+      tags:
+      - PMS
+      summary: Get Appraisal Templates
+      description: Returns available templates used in performance appraisals.
+      operationId: getAppraisalTemplates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_APPRAISAL_TEMPLATES.PmAppraisalTemplatesRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_APPRAISAL_TEMPLATES.PmAppraisalTemplatesResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/PM_GET_COMPLETED_APPRAISALS_V2:
+    post:
+      tags:
+      - PMS
+      summary: Get Completed Appraisals V2
+      description: Returns list of all appraisals for a specific employee using i_PERSON_ID.
+        This endpoint returns all the appraisals for the employee including year,
+        status, plan name, submitted dates, phases
+      operationId: getCompletedAppraisalsV2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_COMPLETED_APPRAISALS.PmCompletedAppraisalsV2Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_COMPLETED_APPRAISALS.PmCompletedAppraisalsV2Response'
+  /Bayanati/bayanati-api/api/MobileAPI/PM_GET_COMPLETED_OBJECTIVES:
+    post:
+      tags:
+      - PMS
+      summary: Get Completed Objectives
+      description: Returns a list of all objectives submitted for an appraisal using
+        (i_APPRAISAL_ID).
+      operationId: getCompletedObjectives
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_COMPLETED_OBJECTIVES.PmCompletedObjectivesRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.Models.PMS.GET_COMPLETED_OBJECTIVES.PmCompletedObjectives1Response'
+  /Bayanati/bayanati-api/api/MobileAPI/VIEW_RESUME:
+    post:
+      tags:
+      - Resume
+      description: Retrieves the uploaded resume or CV file of the employee in its
+        original format.
+      operationId: VIEW_RESUME
+      summary: Get Resume Details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.view_resume.ViewResumeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bayanati_api.view_resume.ViewResumeResponse'
+  /Bayanati/bayanati-api/api/MobileAPI/GET_ATTENDANCE_DET:
+    post:
+      tags:
+      - Time Attendance
+      summary: Get attendance details
+      description: Provides the daily attendance details such as clock-in and clock-out
+        times for an employee passed on i_PERSON_ID and for  a specific date passed
+        on i_DATE. Default will be current date.
+      operationId: getAttendanceDetails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.TimeAttendance.GET_ATTENDANCE_DET.GetAttandanceDetRequest'
+      responses:
+        '200':
+          description: OK
+  /Bayanati/bayanati-api/api/MobileAPI/GET_WORKING_HOURS:
+    post:
+      tags:
+      - Time Attendance
+      summary: Get working hours
+      description: Allows employees to view their daily work hours, violations such
+        as Early Out, Delay, Missing Clock In / Out for the provided i_FROM_DATE and
+        i_TO_DATE. By default starting of the current month will be passed on i_FROM_DATE
+        and end of the current month in i_END_DATE.
+      operationId: getWorkingHours
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bayanati_api.Models.TimeAttendance.GET_WORKING_HOURS.WorkingHoursRequest'
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    LetterRequestLib.Models.ViewPayslipPrcRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose payslip is being requested.
+        i_PERIOD_MONTH:
+          type: string
+          nullable: true
+          description: Payslip month in MM format. If null, defaults to current month.
+        i_PERIOD_YEAR:
+          type: string
+          nullable: true
+          description: Payslip year in YYYY format. If null, defaults to current year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    LetterRequestLib.Models.ViewPayslipPrcResponse:
+      type: object
+      properties:
+        pdf:
+          type: string
+          format: byte
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.PayslipRequest:
+          type: object
+          required:
+            - i_PERSON_ID
+          properties:
+            i_SESSION_ID:
+              type: string
+              nullable: true
+              description: Session identifier used for tracking the request.
+            i_PERSON_ID:
+              type: integer
+              format: int32
+              description: Unique identifier of the person whose payslip is being requested.
+            i_PERIOD_MONTH:
+              type: string
+              nullable: true
+              description: Payslip month in MM format. If null, defaults to current month.
+            i_PERIOD_YEAR:
+              type: string
+              nullable: true
+              description: Payslip year in YYYY format. If null, defaults to current year.
+            i_LANG:
+              type: string
+              nullable: true
+              enum:
+                - AR
+                - US
+              description: 'Preferred response language. Allowed values: "AR" for Arabic, "US" for English.'
+          additionalProperties: false
+    bayanati_api.PayslipResponse:
+          type: object
+          properties:
+            o_PAYSLIP:
+              type: array
+              nullable: true
+              description: List of payslip line items.
+              items:
+                $ref: '#/components/schemas/bayanati_api.O_PAYSLIP'
+            o_ERROR_CODE:
+              type: integer
+              format: int32
+              description: Error code returned from the service. Zero usually indicates success.
+            o_ERROR_DESC:
+              type: string
+              nullable: true
+              description: Description of the error if the request failed.
+          additionalProperties: false
+    bayanati_api.O_PAYSLIP:
+      type: object
+      properties:
+        employee_number:
+          type: string
+          nullable: true
+          description: Employee's unique identifier number.
+        person_id:
+          type: string
+          nullable: true
+          description: Person ID associated with the payslip.
+        full_name:
+          type: string
+          nullable: true
+          description: Full name of the employee.
+        effectivE_DATE:
+          type: string
+          nullable: true
+          description: Effective date of the payslip record.
+        perioD_NAME:
+          type: string
+          nullable: true
+          description: Name of the payroll period.
+        element_name:
+          type: string
+          nullable: true
+          description: Name of the payslip element (e.g., salary, deduction).
+        element_value:
+          type: string
+          nullable: true
+          description: Value associated with the element.
+        classification_name:
+          type: string
+          nullable: true
+          description: Classification category (e.g., Earnings, Deductions).
+        costinG_DEBIT_OR_CREDIT:
+          type: string
+          nullable: true
+          description: Indicates whether the element is a debit or credit.
+      additionalProperties: false
+    bayanati_api.Models.Awards.GET_AWARD_NOMINEES_BY_EMP.GetAwardNomineesByEmployeeRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person retrieving award nominees.
+        i_AWARD_PLAN_ID:
+          type: integer
+          format: int32
+          nullable: true
+          description: Identifier of the specific award plan. Optional.
+        i_STATUS:
+          type: string
+          nullable: true
+          enum:
+          - R
+          - RVK
+          - NONAWARD
+          - SAVED
+          - MGRNOM
+          - PA
+          - A
+          - AWARD
+          - EMPSUB
+          description: 'Nomination status filter. Allowed values: ''R'' (Rejected),
+            ''RVK'' (Revoke), ''NONAWARD'' (Non Awarded), ''SAVED'' (Saved), ''MGRNOM''
+            (Approved by manager), ''PA'' (Pending with award committee), ''A'' (Approved),
+            ''AWARD'' (Awarded), ''EMPSUB'' (Request Submitted).'
+        i_YEAR:
+          type: string
+          nullable: true
+          description: Target year in YYYY format. If null, defaults to the current
+            year.
+      additionalProperties: false
+    bayanati_api.Models.Awards.GET_AWARD_NOMINEES_BY_EMP.GetAwardNomineesByEmployeeResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_AWARD_INT_NOMINEES:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_AWARD_EXT_NOMINEES:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Awards.GET_AWARD_NOMINEES_FOR_EMP.GetAwardNomineesForEmployeeRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose award nomination details
+            are requested.
+        i_AWARD_PLAN_ID:
+          type: integer
+          format: int32
+          nullable: true
+          description: Identifier of the specific award plan. Optional.
+        i_STATUS:
+          type: string
+          nullable: true
+          enum:
+          - R
+          - RVK
+          - NONAWARD
+          - SAVED
+          - MGRNOM
+          - PA
+          - A
+          - AWARD
+          - EMPSUB
+          description: 'Nomination status filter. Allowed values: ''R'' (Rejected),
+            ''RVK'' (Revoke), ''NONAWARD'' (Non Awarded), ''SAVED'' (Saved), ''MGRNOM''
+            (Approved by manager), ''PA'' (Pending with award committee), ''A'' (Approved),
+            ''AWARD'' (Awarded), ''EMPSUB'' (Request Submitted).'
+        i_YEAR:
+          type: string
+          nullable: true
+          description: Target year in YYYY format. If null, defaults to the current
+            year.
+      additionalProperties: false
+    bayanati_api.Models.Awards.GET_AWARD_NOMINEES_FOR_EMP.GetAwardNomineesForEmployeeResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_AWARD_INT_NOMINEES:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.BusinesCard.GET_BUSINESS_CARD_DET.BusinessCardDetailsRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose business card details
+            are being requested.
+      additionalProperties: false
+    bayanati_api.Models.BusinesCard.GET_BUSINESS_CARD_DET.BusinessCardDetailsResponse:
+      type: object
+      properties:
+        o_BUSINESS_CARD:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Compensation.GET_EMP_COMP_OFF_OVERTIME_DET.EmployeeCompensationDetailsRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LEVEL:
+          type: string
+          nullable: true
+          enum:
+          - TEAM
+          - ALL
+          - SUMMARY
+          description: 'Organizational level filter. Allowed values: ''TEAM'' (direct
+            reports), ''ALL'' (entire hierarchy). ''SUMMARY'' for summary of information'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose compensation/off/overtime
+            details are requested.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_START_DATE:
+          type: string
+          nullable: true
+          description: Start date of the period in DD-MM-YYYY format. If null, defaults
+            to the start of the current year.
+        i_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the period in DD-MM-YYYY format. If null, defaults
+            to the end of the current year.
+      additionalProperties: false
+    bayanati_api.Models.Compensation.GET_EMP_COMP_OFF_OVERTIME_DET.EmployeeCompensationDetailsResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_COMP_OFF_OVERTIME_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.EIT.GET_EIT_REQUESTS.GetEitRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      - i_REQUEST_TYPE
+      properties:
+        i_PERSON_ID:
+          type: string
+          description: Identifier of the person whose EIT requests are being queried.
+        i_TRANSACTION_ID:
+          type: integer
+          format: int32
+          nullable: true
+          description: Specific transaction ID to retrieve. Optional.
+        i_REQUEST_TYPE:
+          type: string
+          description: 'Type of EIT request. Eg:  FG_Languages .'
+        i_START_DATE:
+          type: string
+          nullable: true
+          description: Start date of the request period in DD-MM-YYYY format. If null,
+            defaults to the start of the current year.
+        i_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the request period in DD-MM-YYYY format. If null,
+            defaults to the end of the current year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.EIT.GET_EIT_REQUESTS.GetEitRespponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.EIT.GET_EMP_ALL_DETAILS_PER_TYPE.EmployeeAllDetailsPerTypeRequest:
+      type: object
+      required:
+      - i_MANAGER_ID
+      - i_SESSION_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: false
+          enum:
+          - ALL
+          - TEAM
+          description: 'Organizational scope for the request. Allowed values: ''ALL''
+            (entire hierarchy), ''TEAM'' (direct reports only).'
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_MANAGER_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the manager requesting employee details.
+        l_FROM_DATE:
+          type: string
+          nullable: true
+          description: Start date of the data range in DD-MM-YYYY format. If null,
+            defaults to the start of the current year.
+        l_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the data range in DD-MM-YYYY format. If null, defaults
+            to the end of the current year.
+        i_INFORMATION_TYPE:
+          type: string
+          nullable: true
+          enum:
+          - Requests
+          - Violation
+          - Exit Permit
+          description: 'Type of information to retrieve. Allowed values: ''Requests'',
+            ''Violation'', ''Exit Permit''.'
+      additionalProperties: false
+    bayanati_api.Models.EIT.GET_EMP_ALL_DETAILS_PER_TYPE.EmployeeAllDetailsPerTypeResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_EMP_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.EmpDashboard.ProfileCompletionRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose profile completion
+            status is requested.
+        i_YEAR:
+          type: string
+          nullable: true
+          description: Target year in YYYY format. If null, defaults to the current
+            year.
+      additionalProperties: false
+    bayanati_api.Models.EmpDashboard.ProfileCompletionResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_PROFILE_COMPLETION:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.EmployeeProfile.EmployeeProfileRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose profile is requested.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.EmployeeProfile.EmployeeProfileResponse:
+      type: object
+      properties:
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.EmployeeProfile.GET_EMP_INSURANCE_HISTORY.EmpInsuranceHistoryRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_PERSON_ID:
+          type: string
+          nullable: false
+          description: Unique identifier of the person whose insurance history is
+            being requested.
+        i_REGISTRATION_NUMBER:
+          type: string
+          nullable: true
+          description: Registration number associated with the insurance policy. Optional.
+        i_START_DATE:
+          type: string
+          nullable: true
+          description: Start date of the insurance period in DD-MM-YYYY format. If
+            null, defaults to the start of the current year.
+        i_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the insurance period in DD-MM-YYYY format. If null,
+            defaults to the end of the current year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.EmployeeProfile.GET_EMP_INSURANCE_HISTORY.EmpInsuranceHistoryResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_LEAVE_HISTORY.LeaveHistoryRequest:
+      type: object
+      required:
+      - i_SESSION_ID
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: false
+          description: Session identifier used for tracking the request.
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose leave history is requested.
+        i_START_DATE:
+          type: string
+          nullable: true
+          description: Start date of the leave period in DD-MM-YYYY format. If null,
+            defaults to the start of the current year.
+        i_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the leave period in DD-MM-YYYY format. If null,
+            defaults to the end of the current year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_LEVEL:
+          type: string
+          nullable: true
+          enum:
+          - ALL
+          - TEAM
+          description: 'Scope of leave history. Allowed values: ''ALL'' for all subordinates,
+            ''TEAM'' for direct team.'
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_LEAVE_HISTORY.LeaveHistoryResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_LEAVE_MGR_DETAILS.GetLeaveMgrDetailsRequest:
+      type: object
+      required:
+      - i_MANAGER_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_MANAGER_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the manager whose leave details are requested.
+        i_START_DATE:
+          type: string
+          nullable: true
+          description: Start date of the leave period in DD-MM-YYYY format. If null,
+            defaults to start of current year.
+        i_END_DATE:
+          type: string
+          nullable: true
+          description: End date of the leave period in DD-MM-YYYY format. If null,
+            defaults to end of current year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - US
+          - AR
+          description: 'Preferred response language. Allowed values: ''US'' for English,
+            ''AR'' for Arabic.'
+        i_LEVEL:
+          type: string
+          nullable: true
+          enum:
+          - TEAM
+          - ALL
+          description: 'Organizational level filter. Allowed values: ''TEAM'' (direct
+            reports), ''ALL'' (entire hierarchy).'
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_LEAVE_MGR_DETAILS.GetLeaveMgrDetailsResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_ALL_LEV_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ANUL_LEV_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_SICK_LEV_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_OTH_LEV_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_MGR_LATEST_LEAVE_EMP_DET.GetMgrLatestLeaveEmpDetRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - US
+          - AR
+          description: 'Preferred response language. Allowed values: ''US'' for English,
+            ''AR'' for Arabic.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose leave details are being
+            requested.
+        i_LEVEL:
+          type: string
+          nullable: true
+          enum:
+          - TEAM
+          - ALL
+          description: 'Organizational level filter. Allowed values: ''TEAM'' (direct
+            reports), ''ALL'' (entire hierarchy).'
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_MGR_LATEST_LEAVE_EMP_DET.GetMgrLatestLeaveEmpDetResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_PERSON_REQUESTS.PersonRequest:
+      type: object
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+        i_PERSON_ID:
+          type: integer
+          format: int32
+        i_YEAR:
+          type: string
+          nullable: true
+        i_LANG:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Leaves.GET_PERSON_REQUESTS.PersonResponse:
+      type: object
+      properties:
+        o_PERSON_REQUESTS:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.MaQassart.GET_MA_QASSART_SENT.MaQassartSentRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person who submitted the MaQassart
+            record.
+        i_MONTH:
+          type: string
+          nullable: true
+          description: Target month in MM format. If null, defaults to the current
+            month.
+        i_YEAR:
+          type: string
+          nullable: true
+          description: Target year in YYYY format. If null, defaults to the current
+            year.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_BY_PAGE.GetLiveNotificationsByPageRequest:
+      type: object
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_USER_NAME:
+          type: string
+          nullable: true
+          description: Username for whom the live notifications are being requested.
+        i_STATUS:
+          type: string
+          nullable: true
+          enum:
+          - OPEN
+          - CLOSED
+          - ALL
+          - FYI
+          - FYA
+          description: 'Notification status filter. Allowed values: ''OPEN'', ''CLOSED'',
+            ''ALL'', ''FYI'', ''FYA''.'
+        i_PAGE_SIZE:
+          type: string
+          nullable: true
+          description: Number of notifications to retrieve per page. Optional.
+        i_START_WITH_ID:
+          type: string
+          nullable: true
+          description: ID of the notification to start pagination from. Optional.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_BY_PAGE.GetLiveNotificationsByPageResponse:
+      type: object
+      properties:
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_COUNT.GetLiveNotificationCountRequest:
+      type: object
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_USER_NAME:
+          type: string
+          nullable: true
+          description: Username for whom the live notifications count is requested.
+        i_STATUS:
+          type: string
+          nullable: true
+          enum:
+          - OPEN
+          - CLOSED
+          description: 'Notification status filter. Allowed values: ''OPEN'', ''CLOSED''.'
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+      additionalProperties: false
+    bayanati_api.Models.Notifications.GET_LIVE_NOTIFICATIONS_COUNT.GetLiveNotificationCountResponse:
+      type: object
+      properties:
+        o_CURSOR_DET:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.BalanceRequest:
+      type: object
+      required:
+      - i_SESSION_ID
+      - i_ASSIGNMENT_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: false
+          description: Session identifier used to authenticate and authorize the request.
+        i_ASSIGNMENT_ID:
+          type: integer
+          format: int64
+          nullable: false
+          description: Assignment ID of the employee whose leave balance is being retrieved.
+        i_EFFECTIVE_DATE:
+          type: string
+          format: date
+          nullable: true
+          description: Optional. Date at which the balance should be calculated. Defaults to end of the current year if not specified.
+      additionalProperties: false
+    bayanati_api.BalanceResponse:
+      type: object
+      properties:
+        o_ACCRUED_DAYS:
+          type: number
+          format: float
+          description: Total number of leave days accrued by the employee.
+        o_TAKEN_DAYS:
+          type: number
+          format: float
+          description: Total number of leave days taken by the employee.
+        o_REMAINING_DAYS:
+          type: number
+          format: float
+          description: Total number of leave days remaining for the employee.
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+          description: Error code if the request failed.
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+          description: Description of the error if any occurred.
+      additionalProperties: false
+    bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2Request:
+      type: object
+      required:
+      - i_NOTIFICATION_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_NOTIFICATION_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the notification whose content is being
+            requested.
+      additionalProperties: false
+    bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2Response:
+      type: object
+      properties:
+        o_NOTIFICATION_BODY:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2WithJsonStringResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        notificationBodyResponse:
+          $ref: '#/components/schemas/bayanati_api.Models.Notifications.XX_GET_NOTIFICATION_BODY_V2.NotificationBodyV2Response'
+        o_JSON_STRING:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.OLM.EMPLOYEE_COURSE_HIS_V2.EmployeeCourseHisV2Request:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose course history is requested.
+        i_YEAR:
+          type: string
+          nullable: true
+          description: Target year in YYYY format. If null, defaults to the current
+            year.
+        i_DAYS:
+          type: integer
+          format: int32
+          nullable: true
+          description: Filter for number of course history days. Optional.
+      additionalProperties: false
+    bayanati_api.Models.OLM.EMPLOYEE_COURSE_HIS_V2.EmployeeCourseHisV2sResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_DATA:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_APPRAISAL_TEMPLATES.PmAppraisalTemplatesRequest:
+      type: object
+      required:
+      - plaN_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        plaN_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the appraisal plan. Use the 'PM_GET_APPRAISAL_PLANS'
+            API to retrieve this ID.
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_APPRAISAL_TEMPLATES.PmAppraisalTemplatesResponse:
+      type: object
+      properties:
+        o_APPRAISAL_TEMPLATES:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_COMPLETED_APPRAISALS.PmCompletedAppraisalsV2Request:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose completed appraisals
+            are requested.
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_COMPLETED_APPRAISALS.PmCompletedAppraisalsV2Response:
+      type: object
+      properties:
+        o_COMPLETED_APPRAISALS:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_COMPLETED_OBJECTIVES.PmCompletedObjectives1Response:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_COMPLETED_OBJECTIVES:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+    bayanati_api.Models.PMS.GET_COMPLETED_OBJECTIVES.PmCompletedObjectivesRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      - i_MAIN_APPR_ID
+      - i_APPRAISAL_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose completed objectives
+            are requested.
+        i_MAIN_APPR_ID:
+          type: integer
+          format: int32
+          description: Main appraisal identifier associated with the employee.
+        i_APPRAISAL_ID:
+          type: integer
+          format: int32
+          description: Appraisal cycle ID for which completed objectives are being
+            fetched. Use the 'GET_COMPLETED_APPRAISALS' API to retrieve this ID.
+      additionalProperties: false
+    bayanati_api.Models.TimeAttendance.GET_ATTENDANCE_DET.GetAttandanceDetRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      - i_DATE
+      properties:
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose attendance details
+            are requested.
+        i_DATE:
+          type: string
+          description: Attendance date in DD-MM-YYYY format. If null, defaults to
+            the current date.
+      additionalProperties: false
+    bayanati_api.Models.TimeAttendance.GET_WORKING_HOURS.WorkingHoursRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the employee whose working hours are requested.
+        i_FROM_DATE:
+          type: string
+          nullable: true
+          description: Start date of the period in DD-MM-YYYY format. If null, defaults
+            to the first day of the current month.
+        i_TO_DATE:
+          type: string
+          nullable: true
+          description: End date of the period in DD-MM-YYYY format. If null, defaults
+            to the last day of the current month.
+      additionalProperties: false
+    bayanati_api.view_resume.ViewResumeRequest:
+      type: object
+      required:
+      - i_PERSON_ID
+      properties:
+        i_SESSION_ID:
+          type: string
+          nullable: true
+          description: Session identifier used for tracking the request.
+        i_LANG:
+          type: string
+          nullable: true
+          enum:
+          - AR
+          - US
+          description: 'Preferred response language. Allowed values: ''AR'' for Arabic,
+            ''US'' for English.'
+        i_PERSON_ID:
+          type: integer
+          format: int32
+          description: Unique identifier of the person whose resume is being requested.
+      additionalProperties: false
+    bayanati_api.view_resume.ViewResumeResponse:
+      type: object
+      properties:
+        o_ERROR_CODE:
+          type: integer
+          format: int32
+        o_ERROR_DESC:
+          type: string
+          nullable: true
+        o_DATA:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      description: The API key is required to access the Byanati APIs
+      name: X-Api-Key
+      in: header
+security:
+- ApiKey: []
