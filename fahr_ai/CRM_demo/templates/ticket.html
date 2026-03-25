@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ ticket.title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="/">CRM Portal</a>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Dashboard</a>
+        <a class="nav-link" href="/tickets">Tickets</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-bold">
+        Ticket #{{ ticket.id }} - {{ ticket.title }}
+      </div>
+      <div class="card-body">
+        <p><strong>Description:</strong></p>
+        <p class="border rounded p-2 bg-white">{{ ticket.description }}</p>
+        <p><strong>Category:</strong> {{ ticket.category }}</p>
+        <p>
+          <strong>Priority:</strong>
+          <span class="badge 
+            {% if ticket.priority == 'high' %} bg-danger 
+            {% elif ticket.priority == 'medium' %} bg-warning text-dark 
+            {% else %} bg-secondary 
+            {% endif %}">
+            {{ ticket.priority }}
+          </span>
+        </p>
+        <a href="/tickets" class="btn btn-outline-secondary">⬅ Back</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Protocol, runtime_checkable, TypedDict, List, Annotated
+from langgraph.graph import MessagesState, add_messages
+from langchain_core.messages import BaseMessage
+from typing import Optional
+
+def truncating_add_messages(max_messages: int = 10):
+    """
+    Returns a reducer function that automatically truncates messages
+    """
+    def reducer(left: list, right: list) -> list:
+        # First, add messages normally
+        combined = add_messages(left, right)
+        
+        # Then truncate to keep only the last n messages
+        if len(combined) > max_messages:
+            return combined[-max_messages:]
+        return combined
+    
+    return reducer
+
+# Define a generic graph state
+class GraphState(MessagesState):
+    # This will automatically truncate to last 10 messages whenever messages are updated
+    messages: Annotated[List, truncating_add_messages(max_messages=10)]
+    memory: Dict[str, Any]         # for agent's internal use
+    input: Any                     # incoming user input
+    output: Any                    # result of processing                 # next node to route to
+    suggestions: List[str]  # suggestions for the user
+    guardrail_response: dict
+    ticket_summary:str
+    crm_response:dict
+    citations: List[Dict]
+    api_call_history:List[dict]
+    switch_avatar: dict
+    visited_agents: dict
+    raise_ticket: bool
+    llm_input_messages: Optional[List[BaseMessage]] 
+
+@runtime_checkable
+class BaseAgent(Protocol):
+    """
+    BaseAgent defines the interface all agents must adhere to.
+    Compatible with LangGraph node-based execution and async flow.
+    """
+
+    @abstractmethod
+    async def run(self, state):
+        """
+        Core method to execute agent logic given a graph state.
+        """
+        pass
+
+    def reset(self) -> None:
+        """
+        Optional: Resets the agent's internal state or memory if needed.
+        Default implementation does nothing.
+        """
+        pass
+
+    def get_state(self) -> Dict[str, Any]:
+        """
+        Optional: Returns the agent’s internal state (not the graph state).
+        Default implementation returns an empty dictionary.
+        """
+        return {}
+
+    @property
+    def name(self) -> str:
+        """
+        Optional: A human-readable or unique name for the agent.
+        Default implementation returns an empty string.
+        """
+        return ""

@@ -1,0 +1,9 @@
+use_azure: true
+OLLAMA_MODEL_NAME: "qwen3:32b"
+OPENAI_API_BASE_URL: "http://10.254.140.69:11434/v1"
+OPENAI_API_KEY: "AI-key"
+AZURE_OPENAI_ENDPOINT: 'Your_openAI_endpoint'
+AZURE_OPENAI_API_KEY: 'Your_openAI_api_key'
+AZURE_OPENAI_DEPLOYMENT_NAME: "gpt-4o"
+AZURE_OPENAI_API_VERSION: "2024-08-01-preview"
+temperature: 0

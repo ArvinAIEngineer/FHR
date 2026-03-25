@@ -1,0 +1,794 @@
+{
+  "name": "AI Orchestrator Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Upload your data to test RAG",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload your file(s)",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf, .csv",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        2016,
+        464
+      ],
+      "id": "e2a5cfae-b452-4d58-9aca-2bbad79673b2",
+      "name": "Upload your file here",
+      "webhookId": "82848bc4-5ea2-4e5a-8bb6-3c09b94a8c5d"
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "loader": "pdfLoader",
+        "textSplittingMode": "custom",
+        "options": {
+          "splitPages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        672
+      ],
+      "id": "f1921451-7de4-4d88-849e-54512a6c46f7",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "content": "### 📚 Load Data Flow",
+        "height": 556,
+        "width": 540,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1968,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "acfafad7-a842-476e-8865-65c79f016a5f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "model": "dengcao/Qwen3-Embedding-8B:Q8_0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        864
+      ],
+      "id": "98429be2-debd-42a1-87aa-fa6e7fb3f7ad",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "YfWOdN5fBNaHjrdq",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkSize": 4000,
+        "chunkOverlap": 400,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        832
+      ],
+      "id": "4c1160d0-3ec8-4d24-adf4-ea55f84dcc61",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "fahr",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 4000,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        2192,
+        464
+      ],
+      "id": "653a1862-ad33-4dfa-a36e-b7769381c5e1",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "XymtofE51L1LsrAM",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        992,
+        512
+      ],
+      "id": "f108dcc8-680b-49be-b3b3-37a65fdd0113",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "piH6hfV6TG5IGHEf",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "api/Conversations/Conversation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook - Entry Point",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -48
+      ],
+      "webhookId": "orchestrator-entry",
+      "id": "18318966-41ac-4bca-8059-4e37b3bd70b5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Detect Input Sources\nconst chatInput = $input.item.json.chatInput;\nconst sessionId = $input.item.json.sessionId;\nconst query = $input.item.json.query || $input.item.json.body || {};\n\n// 2. Define Comprehensive Dummy Metadata Fallback (from userInfo.json)\nconst dummyPersonalInfo = {\n  full_name: \"Venkata Ramana Yamali\",\n  employee_name: \"Venkata Ramana Yamali\",\n  employee_number: \"511256\",\n  personId: 190395,\n  assignmentId: 124324,\n  title: \"Senior Human Resources Information Systems Specialist\",\n  job: \"Senior Human Resources Information Systems Specialist\",\n  organization: \"قسم تطوير وصيانة الانظمة\",\n  ministry: \"Federal Authority for Government Human Resources (FAHR)\",\n  location: \"الهيئة الاتحادية للموارد البشرية الحكومية- دبي\",\n  email_address: \"venkat@fahr.gov.ae\",\n  mobile_number: \"+971526950282\",\n  work_number: \"+97111234561\",\n  office_number: \"+97111234561\",\n  gender: \"Male\",\n  marital_status: \"Married\",\n  nationality: \"India\",\n  religion: \"Hindu\",\n  education_level: \"PHD\",\n  date_of_birth: \"1990-05-15T00:00:00\",\n  age: 35,\n  experience_years: 10.11,\n  join_date: \"2015-05-24T00:00:00\",\n  manager_name: \"Asem Ahmad Alawadhi\",\n  manager_number: \"553536\",\n  supervisor_id: 965246,\n  country_of_birth: \"United Arab Emirates\",\n  place_of_birth_en: \"Dubai, United Arab Emirates\"\n};\n\n// 3. Extract and Parse Personal Info (from Webhook incoming request)\nlet personalInfo = {};\ntry {\n  if (typeof query.personalInfo === 'string') {\n    personalInfo = JSON.parse(decodeURIComponent(query.personalInfo));\n  } else {\n    personalInfo = query.personalInfo || {};\n  }\n} catch (e) {\n  console.error(\"Failed to parse personalInfo:\", e);\n  personalInfo = {}; \n}\n\n// 4. Merge with Dummy Data (Dummy acts as default if fields are missing in request)\nconst finalPersonalInfo = {\n  ...dummyPersonalInfo,\n  ...personalInfo\n};\n\n// 5. Construct Normalized Object\nconst normalized = {\n  // Use Chat Session ID or Webhook Conv ID\n  conversationId: sessionId || parseInt(query.conversationId) || 0,\n  \n  // Use provided PersonID from request, or from dummy metadata\n  personId: parseInt(query.personId) || finalPersonalInfo.personId || 190395,\n  \n  avatarId: parseInt(query.avatarId) || 0,\n  sessionStart: query.sessionStart === 'true' || query.sessionStart === true || false,\n  language: query.language || 'en',\n  \n  conversationTitle: query.conversationTitle || (chatInput ? 'Chat Session' : 'New Conversation'),\n  \n  // Use Chat Input text or Webhook Message\n  conversationMessage: chatInput || query.conversationMessage || '',\n  \n  channel: chatInput ? 'WEB_CHAT' : (query.channel || 'UI_MOBILE'),\n  inputType: query.inputType || 'TEXT',\n  outputType: query.outputType || 'TEXT',\n  \n  personalInfo: finalPersonalInfo \n};\n\n// 6. Initialize standard array structures for the flow\nnormalized.messages = [{\n  role: 'user',\n  content: normalized.conversationMessage\n}];\n\nnormalized.chatHistory = [];\nnormalized.citations = [];\nnormalized.suggestions = [];\n\nreturn { json: normalized };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        48
+      ],
+      "id": "4b19dec7-c060-410b-80d2-b6e04a577ed0",
+      "name": "Normalize Input"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "session-start-check",
+              "leftValue": "={{$json.sessionStart}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "conversation-id-zero",
+              "leftValue": "={{$json.conversationId.to_string()}}",
+              "rightValue": "'0'",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "name": "Check Session Start",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        144,
+        48
+      ],
+      "id": "ae56605f-bd01-4d42-8e64-dff40f9b7067"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Greeting Node Logic\nconst language = $input.item.json.language || 'en';\nconst personalInfo = $input.item.json.personalInfo || {};\n\n// Extract the name from personalInfo\nconst name = personalInfo.full_name || 'User';\n\nconst greetings = {\n  en: `Hello ${name}! How can I assist you today?`,\n  ar: `مرحباً ${name}! كيف يمكنني مساعدتك اليوم؟`\n};\n\nconst greeting = greetings[language] || greetings['en'];\n\nreturn {\n  json: {\n    ...$input.item.json,\n    messages: [{\n      role: 'assistant',\n      content: greeting,\n      response_agent: 'greeting_agent'\n    }],\n    route: 'end'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        -208
+      ],
+      "id": "8f1de799-baa9-4875-a72d-423778871587",
+      "name": "Greeting Node"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get current input from Normalize Input\nconst currentState = $node[\"Normalize Input\"].json;\nconst currentInputMsg = currentState.conversationMessage;\nconst conversationId = currentState.conversationId;\n\n// 2. Load Existing History \n// (If using n8n binary/static memory, or an external source. Fallback to empty)\nlet chatHistory = currentState.chatHistory || []; \n\n// 3. Filter to keep only the last 9 messages (leaving room for the current user message)\n// This ensures the combined total never exceeds 10.\nif (chatHistory.length > 9) {\n    chatHistory = chatHistory.slice(-9);\n}\n\n// 4. Merge History + Current Message into the 'messages' array\nconst combinedMessages = [\n  ...chatHistory.map(m => ({ role: m.role, content: m.content })),\n  { role: 'user', content: currentInputMsg }\n];\n\nreturn {\n  json: {\n    ...currentState,\n    chatHistory: chatHistory,\n    messages: combinedMessages\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        128
+      ],
+      "id": "dce615e7-19b1-498b-9f8f-1a59c972a62e",
+      "name": "Load Chat History"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Guardrail and persist state\nconst inputState = $node[\"Normalize Input\"].json; \nconst rawOutput = $input.item.json.output; \n\nlet llmOutput;\ntry {\n  if (typeof rawOutput === 'string') {\n    // 1. Regex to find the FIRST JSON object {} in the string\n    // This handles markdown blocks and random text surrounding the JSON\n    const jsonMatch = rawOutput.match(/\\{[\\s\\S]*\\}/);\n    \n    if (jsonMatch) {\n      llmOutput = JSON.parse(jsonMatch[0]);\n    } else {\n      // Fallback if no JSON object is found: treat raw text as the message\n      llmOutput = { is_relevant: true, message: rawOutput.trim() };\n    }\n  } else {\n    llmOutput = rawOutput;\n  }\n} catch (e) {\n  console.error(\"Failed to parse Guardrail JSON:\", e);\n  // Last resort fallback\n  llmOutput = { is_relevant: false, message: \"I apologize, I'm having trouble formatting my response. Please try again.\" };\n}\n\n// 2. Map the guardrail specific parameters\nconst guardrailResponse = {\n  is_relevant: llmOutput.is_relevant ?? true,\n  requires_auth: llmOutput.requires_auth ?? false,\n  allow: llmOutput.allow ?? true,\n  message: llmOutput.message || \"\"\n};\n\n// 3. Clone messages and handle logic\nconst messages = [...(inputState.messages || [])];\nlet skipVirtualAgent = false;\n\n// Check if Guardrail provided a direct response\nif (guardrailResponse.message && guardrailResponse.message.trim() !== \"\") {\n  messages.push({\n    role: 'assistant',\n    content: guardrailResponse.message,\n    response_agent: 'input_guardrail_agent'\n  });\n  \n  skipVirtualAgent = true;\n}\n\n// 4. Define the Route\nlet targetRoute = 'virtual_agent';\n\n// If we have a direct answer OR the query is not relevant -> End\nif (skipVirtualAgent || !guardrailResponse.is_relevant) {\n  targetRoute = 'end';\n}\n\nreturn {\n  json: {\n    ...inputState,\n    messages: messages,\n    guardrailResponse: guardrailResponse,\n    route: targetRoute,\n    direct_response_given: skipVirtualAgent \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        128
+      ],
+      "id": "5ce05c29-82a0-4cbe-950a-ca4fa2045abc",
+      "name": "Process Guardrail Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "not-relevant-check",
+              "leftValue": "={{$json.route==\"virtual_agent\"}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "name": "Route Decision",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        128
+      ],
+      "id": "d22d2716-4ca8-43a4-adba-caa581af6639"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Virtual Agent and persist state\nconst currentState = $node[\"Process Guardrail Response\"].json;\nconst aiOutput = $input.item.json.output;\n\nlet aiText = \"\";\n\n// Handle the case where the AI Agent returns a JSON string or object\ntry {\n    if (typeof aiOutput === 'string') {\n        // Attempt to parse if it looks like JSON, otherwise use as raw text\n        if (aiOutput.trim().startsWith('{')) {\n            const parsed = JSON.parse(aiOutput);\n            aiText = parsed.response || parsed.output || aiOutput;\n        } else {\n            aiText = aiOutput;\n        }\n    } else if (typeof aiOutput === 'object') {\n        aiText = aiOutput.response || aiOutput.output || JSON.stringify(aiOutput);\n    }\n} catch (e) {\n    aiText = aiOutput; // Fallback to raw output on parse error\n}\n\n// Clone and update the messages array for history persistence\nconst messages = [...(currentState.messages || [])];\nmessages.push({\n  role: 'assistant',\n  content: aiText,\n  response_agent: 'virtual_agent'\n});\n\nreturn {\n  json: {\n    ...currentState,\n    messages: messages,\n    aiResponse: aiText // Helper field for the Reviewer/Output Guardrail node\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        -64
+      ],
+      "id": "e2f57b33-fb42-445f-96f2-c47d912ce79b",
+      "name": "Process Virtual Agent Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate contextual suggestions based on conversation\nconst messages = $input.item.json.messages || [];\nconst language = $input.item.json.language || 'en';\n\n// Default suggestions based on language\nconst suggestions = language === 'ar' ? [\n  \"ما هي سياسة الإجازات؟\",\n  \"كيف يمكنني تقديم طلب؟\",\n  \"أخبرني المزيد عن هذا الموضوع\"\n] : [\n  \"What is the leave policy?\",\n  \"How can I submit a request?\",\n  \"Tell me more about this topic\"\n];\n\nreturn {\n  json: {\n    ...$input.item.json,\n    suggestions: suggestions\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        -208
+      ],
+      "id": "c9f774b4-46d0-4c35-89a9-e672fffbdc25",
+      "name": "Generate Suggestions"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Helper function to safely get node output only if it executed\nconst getSafeNode = (name) => {\n  try {\n    return $node[name].json;\n  } catch (e) {\n    return null;\n  }\n};\n\n// 1. Check all possible sources of the final state\nconst reviewer = getSafeNode(\"Process Reviewer Response\");\nconst guardrail = getSafeNode(\"Process Guardrail Response\");\nconst greeting = getSafeNode(\"Greeting Node\");\n\n// 2. Select the \"Source of Truth\" based on which path was taken\n// We prioritize them in order of the workflow depth\nlet sourceState = null;\n\nif (reviewer) {\n  sourceState = reviewer;\n} else if (guardrail && guardrail.direct_response_given) {\n  sourceState = guardrail;\n} else if (greeting) {\n  sourceState = greeting;\n}\n\n// Fallback if something went wrong\nif (!sourceState) {\n    // If we can't find a source, fallback to the previous node's input\n    sourceState = $input.item.json;\n}\n\n// 3. Extract data from the selected source\nconst messages = sourceState.messages || [];\nconst lastMessage = messages[messages.length - 1];\nconst suggestions = sourceState.suggestions || [];\nconst citations = sourceState.citations || [];\nconst apiCallHistory = sourceState.api_call_history || [];\n\n// 4. Build the final structure\nconst outputs = [\n  {\n    type: 'text',\n    data: lastMessage?.content || 'No response available',\n    referenceData: citations,\n    faQsData: suggestions\n  }\n];\n\nif (apiCallHistory.length > 0) {\n  outputs.push({\n    type: 'widget',\n    data: apiCallHistory\n  });\n}\n\n// 5. Check if we are responding to the Chat UI or the Webhook\n// We look at the 'channel' property from our 'Normalize Input' node\nconst channel = $node[\"Normalize Input\"]?.json?.channel;\n\nif (channel === 'WEB_CHAT') {\n  // If it's the Chat UI, return ONLY the text data string\n  // n8n Chat Trigger requires a simple string or an object with 'output' to render bubbles correctly\n  return {\n    json: {\n      output: lastMessage?.content || 'No response available'\n    }\n  };\n}\n\n// Otherwise, return the full JSON structure for Webhook/API\nreturn {\n  json: {\n    conversationId: sourceState.conversationId ? sourceState.conversationId.toString() : \"0\",\n    success: true,\n    outputs: outputs,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        144
+      ],
+      "id": "372ad56e-dc62-4b93-a083-0b396d92e466",
+      "name": "Format Output"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2768,
+        144
+      ],
+      "id": "b541a454-6a35-4663-ac04-7a208ac06bd8"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the current state from the virtual agent processing node\nconst currentState = $node[\"Process Virtual Agent Response\"].json;\n\n// 2. Get the output from the reviewer LLM\nconst rawReview = $input.item.json.output;\nlet review;\n\ntry {\n  if (typeof rawReview === 'string') {\n    // Clean Markdown code blocks (```json ... ```) and extract only the {} content\n    const jsonMatch = rawReview.match(/\\{[\\s\\S]*\\}/);\n    review = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(rawReview);\n  } else {\n    review = rawReview;\n  }\n} catch (e) {\n  console.error(\"Reviewer output parsing failed:\", e);\n  review = { \n    raise_ticket: false, \n    final_answer: typeof rawReview === 'string' ? rawReview : \"\", \n    review_notes: \"Parsing failed, used raw output as fallback\" \n  };\n}\n\n// 3. Extract the final answer and handle ticket logic\nlet finalAnswerText;\nif (review.raise_ticket === true) {\n    finalAnswerText = currentState.language === 'ar' \n        ? \"عذراً، لم أتمكن من العثور على إجابة دقيقة حالياً. يرجى التواصل مع دعم الهيئة الاتحادية للموارد البشرية.\"\n        : \"I apologize, but I couldn't find a precise answer at the moment. Please contact FAHR support for further assistance.\";\n} else {\n    finalAnswerText = review.final_answer || currentState.aiResponse;\n}\n\n// 4. UPDATE MEMORY (chatHistory)\n// We take existing history and add the current pair: User Message + Final Reviewed Answer\nlet updatedHistory = [...(currentState.chatHistory || [])];\n\n// Add current interaction\nupdatedHistory.push({ role: 'user', content: currentState.conversationMessage });\nupdatedHistory.push({ role: 'assistant', content: finalAnswerText });\n\n// Maintain \"Last 10 Messages\" only\nif (updatedHistory.length > 10) {\n    updatedHistory = updatedHistory.slice(-10);\n}\n\n// 5. Update the 'messages' array for immediate display in this execution\nlet messages = [...(currentState.messages || [])];\nif (messages.length > 0 && messages[messages.length - 1].role === 'assistant') {\n    messages[messages.length - 1].content = finalAnswerText;\n}\n\n// 6. Return the synchronized JSON state\nreturn {\n  json: {\n    ...currentState,\n    chatHistory: updatedHistory, // Persistent history for next turn\n    messages: messages,          // Current turn history\n    review_notes: review.review_notes || \"\",\n    raise_ticket: review.raise_ticket || false,\n    final_output_text: finalAnswerText \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        -64
+      ],
+      "id": "b8bcc687-3d24-4f76-b48d-ced4219d2f62",
+      "name": "Process Reviewer Response"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.conversationMessage}}",
+        "options": {
+          "systemMessage": "=### ROLE:\nYou are an advanced content filter and gatekeeper for the UAE FAHR AI Assistant. Your task is to provide immediate responses for personal/identity queries using the provided context or determine if a query requires deep HR policy retrieval.\n\n### USER DATA CONTEXT:\n- Name: {{ $json.personalInfo.full_name }}\n- Job: {{ $json.personalInfo.job }}\n- Ministry: {{ $json.personalInfo.ministry }}\n- Employee ID: {{ $json.personalInfo.employee_number }}\n- Gender: {{ $json.personalInfo.gender }}\n- Marital Status: {{ $json.personalInfo.marital_status }}\n- Nationality: {{ $json.personalInfo.nationality }}\n- Join Date: {{ $json.personalInfo.join_date }}\n- Experience: {{ $json.personalInfo.experience_years }} years\n- Manager: {{ $json.personalInfo.manager_name }}\n\n### TASK:\nAnalyze the user message: \"{{ $json.conversationMessage }}\"\n\n1. **Greetings/General Help**: Provide a warm greeting.\n2. **Personal Identity/Context**: If the user asks about their own name, job, manager, experience, or department, answer immediately using the \"USER DATA CONTEXT\".\n3. **Smart Eligibility Check (e.g., Maternity Leave)**:\n   - If the user asks about maternity leave AND gender is \"Male\": Reply immediately that they are not eligible based on their profile. Set `is_relevant: true`.\n   - If the user asks about maternity leave AND gender is \"Female\": Set `message: \"\"` and `is_relevant: true` to route to the policy agent.\n4. **HR/Policy Query**: For general laws, leave balances, or procedures not answerable by the profile alone, set `message: \"\"` and `is_relevant: true`.\n5. **Out-of-Scope**: For non-HR topics, set `is_relevant: false` and provide a refusal message.\n\n### RESPONSE FORMAT (JSON ONLY):\n{\n  \"is_relevant\": boolean,\n  \"requires_auth\": boolean,\n  \"allow\": boolean,\n  \"message\": \"string\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        576,
+        128
+      ],
+      "id": "611d9b37-ce7b-4fd7-89eb-969e5c52a425",
+      "name": "Input Guardrail - LLM Check"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages}}",
+        "options": {
+          "systemMessage": "=system: |\n  You are a reviewer agent responsible for reviewing AI responses before they are sent to users.\n  \n  tasks:\n    \"Error Detection & Sanitization\":\n      description: \"Check if the AI response(s) contain any errors, technical issues, or system-related information that should not be exposed to users.\"\n    \"System Information Filtering\":\n      description: \"Remove or redact any true internal system information. It is crucial to distinguish between confidential system details and user-facing data schemas.\"\n  \n  rules:\n    filter:\n      - \"Internal system details like server file paths, or technical configurations.\"\n      - \"Error stack traces or raw debugging information.\"\n      - \"Access tokens, or other system credentials.\"\n      - \"Internal codenames, process names, or system architecture details.\"\n      - Tool or API names (e.g., `get_assignment_info`, `get_payslip_info`, `get_knowledge_documents`)\n      - Backend system fields or input and output parameters (e.g., `i_PERSON_ID`, `i_ASSIGNMENT_ID`, `i_SESSION_ID`, `O_TOTAL_EARNINGS`)\n      - Backend logic, request structure, or tool behavior\n      - Tool output verbatim (e.g., raw JSON or error messages)\n    allow:\n      - \"User-specific data and personal information when it is relevant to the user's question (e.g., account details, profile information).\"\n      - \"Field names within a structured data response (like JSON) that describe the user's data (e.g., `ministry_code`, `user_id`).\"\n\n  \"Multi-Message Analysis & Selection\":\n    description: \"Analyze the conversation history to determine the best response strategy.\"\n    rules:\n      - \"Identify the User's core request from the latest message.\"\n      - \"Compare relevance: Identify which proposed answer(s) most directly address the user's question.\"\n      - \"Assess completeness: Determine if the answer fully addresses the prompt or if fusion is needed.\"\n      - \"Preserve information integrity: Never add or interpret new information.\"\n  \n  \"Output Message Formatting\":\n    description: \"Apply frontend-ready markdown formatting.\"\n    rules:\n      - Use bullet points (•) or numbered lists for organized info.\n      - Apply bold text for important terms and section headers.\n      - Use markdown headings (###) for structure.\n      - Ensure line endings and spacing are clean.\n\n  decision_logic:\n    set_raise_ticket_true_if:\n      - \"The response contains technical errors/raw tool outputs.\"\n      - \"Internal system information is exposed.\"\n      - \"The AI failed to answer the question adequately.\"\n    set_raise_ticket_false_if:\n      - \"The response is clean, helpful, and addresses the user's request.\"\n\n  response_guidelines:\n    - \"Return the final answer in the same language as the user's question (Arabic for Arabic, English for English).\"\n    - \"If minor fixes are needed, apply them directly without an apology.\"\n    - \"If a serious error exists, provide a professional apology.\"\n\nhuman: |\n  Please review the conversation history provided below. \n  Your goal is to evaluate the LATEST Assistant response(s) against the User's LATEST question.\n\n  ### Conversation Data:\n  {{ JSON.stringify($json.messages) }}\n\n  ### Instructions:\n  1. Extract the last User message as the 'User Question'.\n  2. Extract the Assistant response(s) following that question.\n  3. Analyze the response(s) for errors, system information leakage (e.g., tool names like 'get_leave_mgr_details' or variables like 'i_PERSON_ID'), or inability to answer.\n  4. If multiple versions of a response exist in the data, select the best one or fuse them.\n  5. Provide your final assessment in a JSON format containing:\n     - \"review_notes\": Internal reasoning.\n     - \"raise_ticket\": Boolean.\n     - \"final_answer\": The sanitized, formatted, and polished response for the user.\n\n  Do not mention \"AI Response 1\" or \"AI Response 2\" in the final_answer; provide a natural response."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        -64
+      ],
+      "id": "2867757f-c27d-41ac-a7d1-405b2828d196",
+      "name": "Output Guardrail - Review"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.conversationMessage}}",
+        "options": {
+          "systemMessage": "=### ROLE:\nYou are a dedicated enterprise assistant supervisor agent and legal assistant chatbot for the UAE Federal Authority for Government Human Resources (FAHR).\n\n### STATE MANAGEMENT & CONTEXT:\n- You are part of an automated orchestrator. You will receive a JSON state containing `messages`, `personId`, and `language`.\n- **ZERO CONVERSATION MEMORY**: Ignore any internal training data about UAE laws. Use ONLY the provided Employee_Profile or Tool results.\n- **MANDATORY FRESH RETRIEVAL**: For every question, you must assume previous tool results are stale and require fresh verification.\n\n### SCOPE & COMPLIANCE:\n- Answers must comply strictly with UAE regulations and FAHR decrees.\n- **PROHIBITION**: LLM-based generation of legal/HR facts is FORBIDDEN. You must use tools for all policy inquiries.\n- **STRICT PHRASING**: Do not paraphrase official legal terms. Use the exact wording from retrieved documents.\n\n### LANGUAGE & TONE:\n- Detected Language: {{ $json.language }}\n- Respond ONLY in the user's language.\n- Tone: Professional, empathetic, and concise.\n\n### TOOL USAGE POLICY:\n- **get_knowledge_documents (RAG)**: Trigger for ANY policy, law, or procedure question.\n- **Employee_Profile**: Check first for personal eligibility (e.g., gender-based leave).\n- **NO EXPOSURE**: Never mention tool names (e.g., \"RAG\", \"API\") or backend IDs (e.g., \"i_PERSON_ID\") to the user. Use phrases like \"according to official policy\" instead.\n\n### RESPONSE FORMAT:\nYou must return a JSON object containing ONLY the response field:\n{\n\"response\": \"Your final professional answer here\"\n}\n\n### RESTRICTIONS:\n1. No general knowledge for UAE federal topics.\n2. If tools return nothing, state: \"I cannot provide this information without access to official records. Please contact FAHR support.\"\n3. Keep answers brief and factual."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -64
+      ],
+      "id": "0d2c4567-6ea6-4af6-8af9-66befed031e4",
+      "name": "Virtual Agent - LLM Processing"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Fetch internal knowledge database or UAE federal government employee HR policies, including housing allowance, leave types, contract regulations, payroll, benefits, and other administrative rules as outlined by FAHR and relevant resolutions. Use this tool for any queries related to internal employment laws, federal HR procedures, or policy documents.",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "fahr",
+          "mode": "list",
+          "cachedResultName": "fahr"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "useReranker": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1472,
+        352
+      ],
+      "id": "86494f25-4736-4e9a-b925-de1d49f9c3fa",
+      "name": "Qdrant Vector Store Retriever",
+      "credentials": {
+        "qdrantApi": {
+          "id": "XymtofE51L1LsrAM",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "rerank-multilingual-v3.0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        544
+      ],
+      "id": "34c8d532-6c13-4932-8b61-29015a498623",
+      "name": "Reranker Cohere",
+      "credentials": {
+        "cohereApi": {
+          "id": "GbtVm8lH3maldlvR",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### 📚 Retriever Data Flow",
+        "height": 364,
+        "width": 556,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "e9ef4123-bd70-40a3-84c0-2595ea9cda0d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        672,
+        368
+      ],
+      "id": "cede9691-2ae5-4a89-95dd-e0443c532aec",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -256,
+        144
+      ],
+      "id": "508b7502-2e36-42af-8f36-a3b7f25543c8",
+      "name": "When chat message received",
+      "webhookId": "b9ca0404-2c3e-4e34-8da3-71c512089055"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Upload your file here": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Qdrant Vector Store Retriever",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Input Guardrail - LLM Check",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Virtual Agent - LLM Processing",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Output Guardrail - Review",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Entry Point": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Check Session Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Session Start": {
+      "main": [
+        [
+          {
+            "node": "Greeting Node",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Load Chat History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Greeting Node": {
+      "main": [
+        [
+          {
+            "node": "Generate Suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Chat History": {
+      "main": [
+        [
+          {
+            "node": "Input Guardrail - LLM Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Guardrail Response": {
+      "main": [
+        [
+          {
+            "node": "Route Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Decision": {
+      "main": [
+        [
+          {
+            "node": "Virtual Agent - LLM Processing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Virtual Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Output Guardrail - Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Suggestions": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Output": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Reviewer Response": {
+      "main": [
+        [
+          {
+            "node": "Generate Suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Guardrail - LLM Check": {
+      "main": [
+        [
+          {
+            "node": "Process Guardrail Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Guardrail - Review": {
+      "main": [
+        [
+          {
+            "node": "Process Reviewer Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Virtual Agent - LLM Processing": {
+      "main": [
+        [
+          {
+            "node": "Process Virtual Agent Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store Retriever": {
+      "ai_tool": [
+        [
+          {
+            "node": "Virtual Agent - LLM Processing",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Qdrant Vector Store Retriever",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Input Guardrail - LLM Check",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "51d4fc16-b879-468e-9730-297b4b4ca55c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b611c2e902c487375609fadd4eb934dc0deac66f40f9cce217982c33e33c6aa2"
+  },
+  "id": "YxkBvSvumqK8XpLL",
+  "tags": []
+}

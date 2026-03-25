@@ -1,0 +1,27 @@
+flask
+Werkzeug
+requests
+joblib
+PyYAML
+python-dateutil
+langchain-core
+langchain-ollama
+langchain-openai
+langchain-community
+langgraph
+sqlalchemy
+typing-extensions
+IPython
+langchain
+chromadb
+langchain_chroma
+sentence_transformers
+rank_bm25
+langchain_huggingface
+langdetect
+langmem
+# voice module
+soundfile
+kokoro
+TTS
+transformers

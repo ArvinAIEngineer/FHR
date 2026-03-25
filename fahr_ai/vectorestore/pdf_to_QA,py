@@ -1,0 +1,203 @@
+import os
+import re
+import json
+import argparse
+from datetime import datetime
+from pathlib import Path
+from typing import List, Dict, Optional, Any
+
+import pandas as pd
+from tqdm import tqdm
+
+# LangChain loaders
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.schema import Document
+
+# Your splitter
+from context_aware_splitter import ChunkConfig, LegalDocumentChunker
+
+# vLLM (OpenAI-compatible) client
+from openai import OpenAI
+
+
+# vLLM fixed connection + model
+BASE_URL = "http://10.254.140.69:11434/v1"
+API_KEY = "not-needed"  # vLLM typically ignores but needs non-empty
+MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct-AWQ"
+
+# Avoid proxies on internal IPs if needed
+os.environ.setdefault("NO_PROXY", "10.254.115.17,10.254.140.69")
+
+
+
+def normalize_text(t: str) -> str:
+    t = (t or "").replace("\x00", " ").strip()
+    t = re.sub(r"[ \t]+", " ", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t.strip()
+
+
+def load_pdf_as_single_document(file_path: Path) -> Optional[Document]:
+    """
+    Reads a PDF with PyPDFLoader and returns ONE merged Document
+    (content = joined pages, metadata from first page + doc-level fields).
+    """
+    loader = PyPDFLoader(str(file_path))
+    pages = loader.load()
+
+    full_text = normalize_text("\n".join([p.page_content or "" for p in pages]))
+    meta = dict(pages[0].metadata) if pages else {}
+    meta.update({
+        "source": str(file_path),
+        "document_id": meta.get("document_id"),
+        "document_name": file_path.name,
+        "processed_at": datetime.now().isoformat(),
+    })
+    return Document(page_content=full_text, metadata=meta)
+
+
+# Chunking via your splitter (no LLM merging)
+def build_chunker(max_tokens: int) -> LegalDocumentChunker:
+    cfg = ChunkConfig(
+        max_tokens=max_tokens,
+        ollama_model="",          # not used here
+        use_llm_merging=False
+    )
+    return LegalDocumentChunker(cfg)
+
+
+# Q&A generation with vLLM (OpenAI-compatible)
+QA_SYS = (
+    "Generate concise, faithful Q&A from the provided chunk only. "
+    "Do not invent facts. Answers: 1–5 sentences. Reply as valid JSON."
+)
+
+def make_qa_prompt(text: str, n: int) -> str:
+    return (
+        "From the text below, create EXACTLY {n} diverse, high-quality question–answer pairs. "
+        "Cover definitions, facts, procedures, and implications as applicable. "
+        "Output STRICTLY as JSON with schema: "
+        '{{"qas":[{{"question":"...","answer":"..."}}, ... exactly {n} items]}}\n\n'
+        f"TEXT:\n{text}"
+    ).format(n=n)
+
+def call_qwen_json(client: OpenAI, prompt: str, temperature: float = 0.1, retries: int = 2) -> Optional[Dict[str, Any]]:
+    for attempt in range(retries + 1):
+        try:
+            resp = client.chat.completions.create(
+                model=MODEL_NAME,
+                temperature=temperature,
+                messages=[
+                    {"role": "system", "content": QA_SYS},
+                    {"role": "user", "content": prompt},
+                ],
+                response_format={"type": "json_object"},
+            )
+            content = resp.choices[0].message.content
+            return json.loads(content)
+        except Exception:
+            if attempt == retries:
+                return None
+
+def fallback_qas(text: str, n: int) -> List[Dict[str, str]]:
+    # Deterministic fallback so you always get exactly n QAs.
+    sents = [s.strip() for s in re.split(r'(?<=[\.\?\!])\s+', text) if len(s.strip()) > 20]
+    if not sents:
+        sents = [text[:200] or "No content"]
+    out = []
+    L = len(sents)
+    for i in range(n):
+        s = sents[i % L]
+        q = f'What is the main point of: "{s[:90]}"?'
+        out.append({"question": q, "answer": s})
+    return out
+
+def generate_qas_for_chunk(client: OpenAI, chunk_text: str, n: int, temperature: float = 0.1) -> List[Dict[str, str]]:
+    data = call_qwen_json(client, make_qa_prompt(chunk_text, n), temperature)
+    if not data or "qas" not in data:
+        return fallback_qas(chunk_text, n)
+    qas = (data.get("qas") or [])[:n]
+    if len(qas) < n:
+        qas.extend(fallback_qas(chunk_text, n - len(qas)))
+    # Clean
+    cleaned = []
+    for qa in qas:
+        q = (qa.get("question") or "").strip() or "What is the key idea?"
+        a = (qa.get("answer") or "").strip() or "The text describes the key idea in the provided chunk."
+        cleaned.append({"question": q, "answer": a})
+    return cleaned
+
+
+# Pipeline
+def process_pdf(
+    file_path: Path,
+    chunker: LegalDocumentChunker,
+    qa_client: OpenAI,
+    qa_per_chunk: int,
+    qa_temperature: float
+) -> List[Dict[str, str]]:
+    doc = load_pdf_as_single_document(file_path)
+    if not doc:
+        return []
+
+    rows = []
+    chunks: List[Document] = chunker.chunk_document(doc)
+    for ch in chunks:
+        text = ch.page_content or ""
+        qas = generate_qas_for_chunk(qa_client, text, qa_per_chunk, qa_temperature)
+        # Append rows with the required 3 columns
+        for qa in qas:
+            rows.append({
+                "Question": qa["question"],
+                "Answer": qa["answer"],
+                "Context": text,   # the chunk text
+            })
+    return rows
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pdf-dir", required=True, type=Path)
+    parser.add_argument("--out-dir", required=True, type=Path)
+    parser.add_argument("--qa-per-chunk", type=int, default=10)
+    parser.add_argument("--qa-temperature", type=float, default=0.1)
+    parser.add_argument("--max-chunk-tokens", type=int, default=1200)  # tuned for Qwen
+    args = parser.parse_args()
+
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Build splitter (no LLM merging)
+    chunker = build_chunker(max_tokens=args.max_chunk_tokens)
+
+    # vLLM OpenAI-compatible client
+    qa_client = OpenAI(base_url=BASE_URL, api_key=API_KEY)
+
+    # Process PDFs
+    pdfs = sorted([p for p in args.pdf_dir.iterdir() if p.suffix.lower() == ".pdf"])
+    all_rows: List[Dict[str, str]] = []
+
+    for fp in tqdm(pdfs, desc="Processing PDFs"):
+        all_rows.extend(
+            process_pdf(
+                fp,
+                chunker=chunker,
+                qa_client=qa_client,
+                qa_per_chunk=args.qa_per_chunk,
+                qa_temperature=args.qa_temperature,
+            )
+        )
+
+    # Write CSV + Excel with the exact columns
+    df = pd.DataFrame(all_rows, columns=["Question", "Answer", "Context"])
+    csv_path = args.out_dir / "qa_by_chunk.csv"
+    xlsx_path = args.out_dir / "qa_by_chunk.xlsx"
+    df.to_csv(csv_path, index=False, encoding="utf-8")
+    with pd.ExcelWriter(xlsx_path, engine="xlsxwriter") as writer:
+        df.to_excel(writer, index=False, sheet_name="QAs")
+
+    print(f"Saved: {csv_path}")
+    print(f"Saved: {xlsx_path}")
+
+
+if __name__ == "__main__":
+    main()

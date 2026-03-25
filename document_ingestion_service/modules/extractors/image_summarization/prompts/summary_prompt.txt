@@ -1,0 +1,7 @@
+Consider the following context extracted from an image:
+```
+<COLLATED_FEATURES>
+```
+
+TASK:
+Provide a comprehensive summary of the context and image provided.

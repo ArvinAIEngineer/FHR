@@ -1,0 +1,18 @@
+# Vector stores
+**/chroma_db/
+**/vectorestore/*/
+*.bin
+*.pkl
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
+
+# n8n
+node_modules/

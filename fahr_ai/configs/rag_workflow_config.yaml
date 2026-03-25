@@ -1,0 +1,156 @@
+# configs/rag_workflow_config.yaml
+prompts:
+  # Query refinement prompt with chat history
+  refine_query_with_history_prompt: |
+    Given the user's current query and recent conversation history, rewrite the query to be more specific and contextually clear in the same language. Replace any vague references like "this", "that", "these", "those", "it", or "them" with specific terms from the conversation context.
+
+    Only return the **refined query text itself** — do not explain or comment.
+
+    Conversation History:
+    {history}
+
+    Original Query:
+    {original_query}
+
+    Refined Query:
+
+  # Multi-hop followup prompt
+  followup_prompt: |
+    Based on the following context and original question about FAHR regulations, what additional information 
+    should we search for to provide a complete answer?
+
+    Original question: {query}
+
+    Context from initial search:
+    {context}
+
+    Please suggest a specific follow-up search query that would help gather missing information about FAHR regulations,
+    labor laws, or HR policies in the UAE. Focus on specific terms related to the question.
+    Only return the follow-up query text without explanations.
+
+  # Validation prompt
+  validation_prompt: |
+    You are a fact-checking specialist focusing on FAHR regulations and UAE labor laws.
+
+    Review the following answer to the user's question and the supporting context.
+
+    Question: {query}
+    Answer: {answer}
+    Context: {context}
+
+    If the answer simply says the context doesn't contain the information, or the information is missing, mark it as incorrect or needs_more_info.
+
+    Respond in the following format:
+    - Validation: correct / incorrect / needs_more_info
+    - Feedback: <short reason>
+
+  # Feedback incorporation prompt
+  feedback_prompt: |
+    You are tasked with improving an answer based on user feedback.
+
+    Original question: {query}
+
+    Previous answer: {previous_answer}
+
+    User feedback: {feedback}
+
+    Relevant context: {context}
+
+    Please provide an improved answer that addresses the user's feedback while ensuring accuracy based on the context.
+
+  initial_retrieval_instruction: |
+    You are an expert on FAHR (Federal Authority for Government Human Resources) regulations and UAE labor laws.
+
+    Based on the retrieved context, answer the user’s query accurately and concisely.
+
+    Query:
+    {query}
+
+    Retrieved Context:
+    {context}
+
+    Provide your answer in this format:
+    1. A direct response
+    2. Bullet points if needed
+    3. Avoid assumptions — say "not available" if the context doesn’t cover i
+
+
+  validated_instruction: |
+    You previously answered the following user query:
+
+    Query:
+    {query}
+
+    Your previous answer:
+    {previous_answer}
+
+    Retrieved Context:
+    {context}
+
+    Based on the context, either improve your answer or confirm it is correct.
+
+
+  multi_hop_complete_instruction: |
+    Additional context was gathered to improve the answer to this query:
+  
+    Query:
+    {query}
+  
+    Combined Multi-Hop Context:
+    {context}
+  
+    Using this, provide a clear and complete answer without repeating unnecessary details.
+  
+
+  default_instruction: |
+    You are an expert on FAHR (Federal Authority for Government Human Resources) regulations and UAE labor laws.
+
+    Please answer the user's question based on the available information. Focus on factual information from the 
+    FAHR annual reports and avoid generating code or irrelevant content. If specific information isn't available,
+    acknowledge what you don't know rather than inventing details.
+
+  self_correction_prompt: |
+    Given the question: "{query}"
+    The previous answer was:
+    {previous_answer}
+
+    Context:
+    {context}
+
+    Feedback:
+    {feedback}
+
+    Please refine the answer to address the feedback accurately, ensuring it is grounded in the provided context.
+
+  classification_prompt: |
+    You are an expert on FAHR (Federal Authority for Government Human Resources) regulations and UAE labor laws.
+    
+    Given the following user query related to FAHR and UAE labor laws, identify the MOST 3 RELEVANT topics
+    from the list of predefined topics below. The topics must EXACTLY match one or more of the options provided.
+    
+    User Query: {query}
+    
+    Predefined Topics:
+    {topics_list}
+    
+    Return ONLY the exact name of the 3 most relevant topics from the list. Do not add any explanation or additional text.
+    
+#retrival
+topic_file_path:
+  en: "./configs/fahr_En_topics.txt"
+  ar: "./configs/fahr_AR_topics.txt"
+retrival_config:
+  enable_bm25_ensemble: True
+  bm25_retrieval_doc_limit: 2000  # Fixed typo from "bm25_rertival_doc_limit"
+  bm25_retrieval_weight: 0.5  # 30% BM25, 70% dense (was "bm25_rertival_weight")
+  bm25_top_k: 10  # New: More candidates for BM25
+  top_k: 5
+  use_reranker: True
+  reranker: "./models/bge-reranker-v2-m3"
+  max_doc_age_years: 2 
+  force_document_retrieval: true
+  min_required_documents: 1
+  fallback_search_enabled: true
+  max_retrieval_attempts: 3
+  expand_search_on_failure: true
+  

@@ -1,0 +1,14 @@
+vectorstore: # URL of the remote vectorstore API
+  remote:
+    endpoint: "http://localhost:8000/query"
+    health_endpoint: "http://localhost:8000/health"
+    timeout: 5
+  local:
+    persist_directory: "./vectorestore/contextAware_chroma_db_2" # Directory where local vectorstore is stored
+    collection_name: "langchain" # Name of the vectorstore collection
+    # embedding_model: "intfloat/multilingual-e5-large-instruct" # Name of the embedding model for local vectorstore
+    embedding_model: "dengcao/Qwen3-Embedding-8B:Q8_0" # Name of the embedding model for local vectorstore
+    # Ollama configuration
+    ollama_base_url: "http://10.254.140.69:11434"
+    ollama_embedding_model: "dengcao/Qwen3-Embedding-8B:Q8_0"
+    use_ollama: True # Set to true to use Ollama models, false for Azure

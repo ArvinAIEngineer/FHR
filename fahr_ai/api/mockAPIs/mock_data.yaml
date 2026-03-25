@@ -1,0 +1,149 @@
+# Mock data for Bayanati API endpoints
+# This file contains sample responses for testing purposes
+
+payslip:
+  default:
+    o_PAYSLIP:
+      - employee_number: "EMP001"
+        person_id: "12345"
+        full_name: "Ahmed Al-Rashid"
+        effectivE_DATE: "01-09-2025"
+        perioD_NAME: "September 2025"
+        element_name: "Basic Salary"
+        element_value: "15000.00"
+        classification_name: "Earnings"
+        costinG_DEBIT_OR_CREDIT: "Credit"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+  
+  "67890":
+    o_PAYSLIP:
+      - employee_number: "EMP002"
+        person_id: "67890"
+        full_name: "Fatima Al-Zahra"
+        effectivE_DATE: "01-09-2025"
+        perioD_NAME: "September 2025"
+        element_name: "Basic Salary"
+        element_value: "18000.00"
+        classification_name: "Earnings"
+        costinG_DEBIT_OR_CREDIT: "Credit"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+
+employee_profile:
+  default:
+    o_CURSOR_DET:
+      - employee_id: "12345"
+        full_name: "Ahmed Al-Rashid"
+        job_title: "Senior Software Engineer"
+        department: "Information Technology"
+        ministry: "Ministry of Digital Development"
+        location: "Dubai, UAE"
+        manager_name: "Sarah Al-Mansouri"
+        employee_status: "Active"
+        hire_date: "15-03-2020"
+        assignment_id: "ASG001"
+        grade: "Grade 12"
+        position_code: "IT-001"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+  
+  "67890":
+    o_CURSOR_DET:
+      - employee_id: "67890"
+        full_name: "Fatima Al-Zahra"
+        job_title: "IT Manager"
+        department: "Information Technology"
+        ministry: "Ministry of Digital Development"
+        location: "Dubai, UAE"
+        manager_name: "Mohammed Al-Hashimi"
+        employee_status: "Active"
+        hire_date: "10-01-2018"
+        assignment_id: "ASG002"
+        grade: "Grade 14"
+        position_code: "IT-MGR-001"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+
+annual_leave:
+  default:
+    o_ACCRUED_DAYS: 30.0
+    o_TAKEN_DAYS: 12.5
+    o_REMAINING_DAYS: 17.5
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+  
+  "1001": # assignment_id
+    o_ACCRUED_DAYS: 35.0
+    o_TAKEN_DAYS: 8.0
+    o_REMAINING_DAYS: 27.0
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+  
+  "1002": # assignment_id
+    o_ACCRUED_DAYS: 25.0
+    o_TAKEN_DAYS: 20.0
+    o_REMAINING_DAYS: 5.0
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+
+profile_completion:
+  default:
+    o_PROFILE_COMPLETION:
+      - section_name: "Personal Information"
+        completion_percentage: 100
+        status: "Complete"
+        missing_fields: []
+      - section_name: "Contact Details"
+        completion_percentage: 85
+        status: "Incomplete"
+        missing_fields: ["Emergency Contact", "Secondary Phone"]
+      - section_name: "Educational Qualifications"
+        completion_percentage: 90
+        status: "Incomplete"
+        missing_fields: ["Certificate Upload"]
+      - section_name: "Work Experience"
+        completion_percentage: 75
+        status: "Incomplete"
+        missing_fields: ["Previous Company Details", "Reference Contacts"]
+      - section_name: "Skills and Certifications"
+        completion_percentage: 60
+        status: "Incomplete"
+        missing_fields: ["Technical Skills", "Certifications", "Languages"]
+      - overall_completion: 82
+        total_sections: 5
+        complete_sections: 1
+        incomplete_sections: 4
+        last_updated: "25-08-2025"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null
+  
+  "67890":
+    o_PROFILE_COMPLETION:
+      - section_name: "Personal Information"
+        completion_percentage: 100
+        status: "Complete"
+        missing_fields: []
+      - section_name: "Contact Details"
+        completion_percentage: 100
+        status: "Complete"
+        missing_fields: []
+      - section_name: "Educational Qualifications"
+        completion_percentage: 100
+        status: "Complete"
+        missing_fields: []
+      - section_name: "Work Experience"
+        completion_percentage: 95
+        status: "Incomplete"
+        missing_fields: ["Reference Contacts"]
+      - section_name: "Skills and Certifications"
+        completion_percentage: 90
+        status: "Incomplete"
+        missing_fields: ["Languages"]
+      - overall_completion: 97
+        total_sections: 5
+        complete_sections: 3
+        incomplete_sections: 2
+        last_updated: "28-08-2025"
+    o_ERROR_CODE: 0
+    o_ERROR_DESC: null

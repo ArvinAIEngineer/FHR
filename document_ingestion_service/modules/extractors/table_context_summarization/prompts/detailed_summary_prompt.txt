@@ -1,0 +1,14 @@
+Consider the following CSV table:
+```
+<TABLE>
+```
+
+TASK:
+You are a data analyst. You are given a CSV-formatted table as input. Your task is to explain the contents of the table in a concize manner.
+
+The explanation should include:
+- A description of what the table appears to represent overall.
+- An explanation of each column: its name, type of data it holds, and its potential meaning.
+- Any notable patterns, trends, or anomalies you observe.
+- Do not add unecesary header or footer in the response.
+

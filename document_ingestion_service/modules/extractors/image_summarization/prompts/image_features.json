@@ -1,0 +1,19 @@
+{
+    "text": "Extract all the text from the image.",
+    "tables": "Identify and extract any tables, including column headers, rows, and individual cell data.",
+    "workflow": "Detect and extract any workflow diagrams, flowcharts, or processes, including their steps and connections.",
+    "figures": "Identify any figures or illustrations within the image and extract associated captions and labels.",
+    "charts": "Detect and extract data from any charts or graphs, including axis labels, legends, and data points.",
+    "logos": "Identify any logos, branding, or trademarks present within the image and extract associated details.",
+    "headers": "Extract header sections, including title and section titles.",
+    "footers": "Extract footer content, such as page numbers, copyright text, or additional references.",
+    "annotations": "Extract any annotations, comments, or marginalia in the image, especially those highlighting important notes or explanations.",
+    "lists": "Identify and extract lists, whether ordered or unordered, and capture the list items.",
+    "links": "Extract any URLs, hyperlinks, or references to external websites or resources.",
+    "dates": "Identify and extract any dates, deadlines, or time-related information.",
+    "references": "Detect and extract any bibliographic references, citations, or cross-references.",
+    "symbols": "Identify and extract any symbolic representations or icons used in the document.",
+    "formulas": "Extract any mathematical formulas, equations, or expressions present within the image.",
+    "labels": "Identify and extract labels such as product names, specifications, or other descriptive terms.",
+    "footnotes": "Extract footnotes or references to additional information or sources provided at the bottom of the page."
+}

@@ -1,0 +1,69 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+env0/
+env1/
+venv/
+ENV/
+
+# Pip files
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Local data, logs, and Chroma persistence
+*.log
+*.sqlite3
+chroma_data/
+chroma_db/
+vectorstore/
+*.db
+*.parquet
+*.zip
+
+# VSCode and PyCharm settings
+.vscode/
+.idea/
+
+# OS / Editor-specific files
+.DS_Store
+Thumbs.db
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Test and coverage files
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.pytest_cache/
+
+# FastAPI generated files (optional)
+openapi.json
+docs/
+
+# Local configs
+settings_local.py
+.env.local
+.env.*
+
+# Docker and deployment
+*.pid
+*.tar
+*.bak
+*.swp
