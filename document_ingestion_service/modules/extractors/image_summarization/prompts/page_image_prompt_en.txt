@@ -1,7 +1,0 @@
-You are an expert document analyzer. Analyze this page image and provide a detailed summary of its content. Focus on:
-1. The main topic or purpose of the page
-2. Any key information, facts, or data presented
-3. Important visual elements or layout features
-4. Any notable sections or subsections
-
-Provide a clear, concise summary that captures the essence of the page's content. 

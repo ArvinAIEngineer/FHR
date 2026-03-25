@@ -1,5 +1,0 @@
-beautifulsoup4==4.13.4
-pandas==2.2.3
-joblib==1.4.2
-requests==2.32.3
-weasyprint==65.1
